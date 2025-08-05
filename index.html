@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nima Tolouei - Matrix Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: black;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      background: black;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 5;
+      padding: 60px 20px 100px;
+    }
+
+    .lang-toggle {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 128, 0, 0.8);
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      box-shadow: 0 0 8px black;
+      z-index: 10;
+      transition: transform 0.3s ease;
+    }
+
+    .lang-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    .fade {
+      transition: opacity 0.5s ease;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3em;
+      margin-top: 30px;
+      color: #00ff00;
+      text-shadow: 2px 2px 4px black, 0 0 10px #00ff00;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2em;
+      margin-top: 40px;
+      text-shadow: 2px 2px 4px black;
+    }
+
+    .green-shadow {
+      color: #00ff00;
+      text-shadow: 0 0 10px #00ff00;
+    }
+
+    .red-shadow {
+      color: #ff0000;
+      text-shadow: 0 0 10px #ff0000;
+    }
+
+    .skills {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .skill {
+      padding: 12px 20px;
+      font-size: 1.2em;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      min-width: 100px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .skill:active {
+      transform: rotate(15deg) scale(1.05);
+      box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+    }
+
+    .green-box {
+      background: linear-gradient(135deg, #003300, #00ff00);
+      box-shadow: 0 0 10px black, 0 0 10px #00ff00;
+    }
+
+    .red-box {
+      background: linear-gradient(135deg, #330000, #ff0000);
+      box-shadow: 0 0 10px black, 0 0 10px #ff0000;
+    }
+
+    .animating.green-box {
+      box-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+    }
+
+    .animating.red-box {
+      box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+    }
+
+    .music-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,50,0.8);
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 0 10px #00f, 0 0 20px black;
+      z-index: 20;
+      flex-wrap: wrap;
+    }
+
+    .music-controls button {
+      background: #0044cc;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .music-controls button:hover {
+      background: #0066ff;
+    }
+
+    .music-controls input[type=range] {
+      cursor: pointer;
+    }
+
+    /* ✅ Responsive Styles */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+
+      .section-title {
+        font-size: 1.5em;
+      }
+
+      .skill {
+        font-size: 1em;
+        min-width: 80px;
+        padding: 10px 16px;
+      }
+
+      .lang-toggle {
+        padding: 6px 10px;
+        font-size: 13px;
+      }
+
+      .music-controls {
+        bottom: 10px;
+        left: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="matrixCanvas"></canvas>
+  <div class="overlay"></div>
+
+  <div class="lang-toggle" onclick="toggleLang()">فارسی</div>
+
+  <div class="content">
+    <h1 id="mainName" class="fade">Nima Tolouei</h1>
+
+    <div id="knowledgeTitle" class="section-title green-shadow fade">Skills</div>
+    <div class="skills" id="knowledgeList">
+      <div class="skill green-box">C++</div>
+      <div class="skill green-box">Python</div>
+      <div class="skill green-box">Assembly</div>
+      <div class="skill green-box">Lua</div>
+    </div>
+
+    <div id="specialtiesTitle" class="section-title red-shadow fade">Specialties</div>
+    <div class="skills" id="specialtiesList">
+      <div class="skill red-box">Hack</div>
+      <div class="skill red-box">Making Cheat</div>
+      <div class="skill red-box">Penetration Test</div>
+      <div class="skill red-box">Malware Analysis</div>
+    </div>
+  </div>
+
+  <audio id="bgMusic" src="music.mp3" autoplay loop></audio>
+
+  <div class="music-controls">
+    <button id="playPause">▶ Play</button>
+    <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
+  </div>
+
+  <script>
+    // Matrix
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    const fontSize = 18;
+    let columns, drops;
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789آابپتثجچحخدذرزسشصضطظعغفقکگلمنوهی';
+
+    function initMatrix() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array(columns).fill(1);
+    }
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#00FF00';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+
+    initMatrix();
+    setInterval(drawMatrix, 50);
+    window.addEventListener('resize', () => {
+      initMatrix();
+      drops = Array(columns).fill(1);
+    });
+
+    // Text animation
+    function matrixTextReveal(element, newText, delay = 40) {
+      const chars = letters;
+      let iterations = 0;
+      const length = newText.length;
+      element.classList.add('animating');
+      const interval = setInterval(() => {
+        element.innerText = newText
+          .split('')
+          .map((char, i) => {
+            if (i < iterations) return newText[i];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join('');
+        if (iterations >= length) {
+          clearInterval(interval);
+          element.classList.remove('animating');
+        }
+        iterations += 0.5;
+      }, delay);
+    }
+
+    window.addEventListener('load', () => {
+      const skills = document.querySelectorAll('.skill');
+      skills.forEach((skill, index) => {
+        const original = skill.innerText;
+        skill.innerText = '';
+        setTimeout(() => matrixTextReveal(skill, original), index * 300);
+      });
+    });
+
+    // Language toggle
+    let lang = 'en';
+    function toggleLang() {
+      const items = [
+        { el: document.getElementById('mainName'), en: 'Nima Tolouei', fa: 'نیما طلوعی' },
+        { el: document.getElementById('knowledgeTitle'), en: 'Skills', fa: 'مهارت ها' },
+        { el: document.getElementById('specialtiesTitle'), en: 'Specialties', fa: 'مهارت ها' }
+      ];
+      items.forEach(({ el, en, fa }) => {
+        el.style.opacity = 0;
+        setTimeout(() => {
+          el.innerText = (lang === 'en') ? fa : en;
+          el.style.opacity = 1;
+        }, 300);
+      });
+      lang = (lang === 'en') ? 'fa' : 'en';
+    }
+
+    // Music autoplay
+    const music = document.getElementById('bgMusic');
+    const playPauseBtn = document.getElementById('playPause');
+    const volumeSlider = document.getElementById('volume');
+
+    function tryAutoplay() {
+      music.play().then(() => {
+        playPauseBtn.textContent = '⏸ Pause';
+      }).catch(() => {
+        playPauseBtn.textContent = '▶ Play'; // fallback
+      });
+    }
+
+    playPauseBtn.addEventListener('click', () => {
+      if (music.paused) {
+        music.play();
+        playPauseBtn.textContent = '⏸ Pause';
+      } else {
+        music.pause();
+        playPauseBtn.textContent = '▶ Play';
+      }
+    });
+
+    volumeSlider.addEventListener('input', () => {
+      music.volume = volumeSlider.value;
+    });
+
+    window.addEventListener('load', tryAutoplay);
+    window.addEventListener('click', tryAutoplay, { once: true });
+  </script>
+</body>
+</html>
